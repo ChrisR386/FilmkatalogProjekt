@@ -1,7 +1,9 @@
 import json
 
-filme = {}  # Filme speichern: Schlüssel=Titel, Wert=Details-Dict
-DATEINAME = "filme.json"
+# Dein Filmkatalog-Programm
+
+filme = {}  # Ein Dictionary zum Speichern der Filme. Schlüssel: Filmtitel, Wert: Dictionary mit Details
+DATEINAME = "filme.json"  # Dateiname für die Speicherung des Katalogs
 
 def filme_anzeigen():
     if not filme:
@@ -19,22 +21,35 @@ def filme_anzeigen():
 
 def film_hinzufuegen():
     print("\n--- Film hinzufügen ---")
-    titel = input("Titel des Films: ").strip()
+    titel = input("Titel des Films: ")
+    regisseur = input("Regisseur des Films: ")
+
+    # Validierung für das Jahr
+    while True:
+        jahr_str = input("Erscheinungsjahr des Films: ")
+        try:
+            jahr = int(jahr_str)  # Versuche, die Eingabe in eine Ganzzahl umzuwandeln
+            break
+        except ValueError:
+            print("Ungültige Eingabe. Das Jahr muss eine Zahl sein.")
+
+    genre = input("Genre des Films: ")
+
+    # Validierung für die Bewertung
+    while True:
+        bewertung_str = input("Bewertung (1-5 Sterne): ")
+        try:
+            bewertung = int(bewertung_str)
+            if 1 <= bewertung <= 5:
+                break
+            else:
+                print("Ungültige Bewertung. Bitte geben Sie eine Zahl zwischen 1 und 5 ein.")
+        except ValueError:
+            print("Ungültige Eingabe. Die Bewertung muss eine Zahl sein.")
+
     if titel in filme:
         print(f"Fehler: Film '{titel}' existiert bereits im Katalog.")
         return
-
-    regisseur = input("Regisseur des Films: ").strip()
-    jahr = input("Erscheinungsjahr des Films: ").strip()
-    genre = input("Genre des Films: ").strip()
-
-    # Bewertung validieren (nur Zahlen 1-5)
-    while True:
-        bewertung = input("Bewertung (1-5 Sterne): ").strip()
-        if bewertung.isdigit() and 1 <= int(bewertung) <= 5:
-            break
-        else:
-            print("Ungültige Bewertung. Bitte eine Zahl zwischen 1 und 5 eingeben.")
 
     filme[titel] = {
         "regisseur": regisseur,
@@ -68,7 +83,7 @@ def film_suchen():
 
 def film_loeschen():
     print("\n--- Film löschen ---")
-    titel_zu_loeschen = input("Titel des zu löschenden Films: ").strip()
+    titel_zu_loeschen = input("Titel des zu löschenden Films: ")
     if titel_zu_loeschen in filme:
         del filme[titel_zu_loeschen]
         print(f"Film '{titel_zu_loeschen}' wurde aus dem Katalog entfernt.")
@@ -112,7 +127,7 @@ def main():
     katalog_laden()
     while True:
         zeige_menue()
-        wahl = input("Ihre Wahl: ").strip()
+        wahl = input("Ihre Wahl: ")
 
         if wahl == '1':
             film_hinzufuegen()
