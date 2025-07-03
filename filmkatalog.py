@@ -1,9 +1,7 @@
-import json  # NEU
+import json
 
-# Dein Filmkatalog-Programm
-
-filme = {}  # Ein Dictionary zum Speichern der Filme. Schlüssel: Filmtitel, Wert: Dictionary mit Details
-DATEINAME = "filme.json"  # NEU: Dateiname für die Speicherung des Katalogs
+filme = {}  # Filme speichern: Schlüssel=Titel, Wert=Details-Dict
+DATEINAME = "filme.json"
 
 def filme_anzeigen():
     if not filme:
@@ -15,21 +13,34 @@ def filme_anzeigen():
         print(f"Titel: {titel}")
         print(f"  Regisseur: {details.get('regisseur', 'N/A')}")
         print(f"  Jahr: {details.get('jahr', 'N/A')}")
+        print(f"  Genre: {details.get('genre', 'N/A')}")
+        print(f"  Bewertung: {details.get('bewertung', 'N/A')}")
         print("-----------------------")
 
 def film_hinzufuegen():
     print("\n--- Film hinzufügen ---")
-    titel = input("Titel des Films: ")
-    regisseur = input("Regisseur des Films: ")
-    jahr = input("Erscheinungsjahr des Films: ")
-
+    titel = input("Titel des Films: ").strip()
     if titel in filme:
         print(f"Fehler: Film '{titel}' existiert bereits im Katalog.")
         return
 
+    regisseur = input("Regisseur des Films: ").strip()
+    jahr = input("Erscheinungsjahr des Films: ").strip()
+    genre = input("Genre des Films: ").strip()
+
+    # Bewertung validieren (nur Zahlen 1-5)
+    while True:
+        bewertung = input("Bewertung (1-5 Sterne): ").strip()
+        if bewertung.isdigit() and 1 <= int(bewertung) <= 5:
+            break
+        else:
+            print("Ungültige Bewertung. Bitte eine Zahl zwischen 1 und 5 eingeben.")
+
     filme[titel] = {
         "regisseur": regisseur,
-        "jahr": jahr
+        "jahr": jahr,
+        "genre": genre,
+        "bewertung": bewertung
     }
     print(f"Film '{titel}' wurde hinzugefügt.")
 
@@ -51,18 +62,20 @@ def film_suchen():
         print(f"Titel: {titel}")
         print(f"  Regisseur: {details.get('regisseur', 'N/A')}")
         print(f"  Jahr: {details.get('jahr', 'N/A')}")
+        print(f"  Genre: {details.get('genre', 'N/A')}")
+        print(f"  Bewertung: {details.get('bewertung', 'N/A')}")
         print("-----------------------")
 
 def film_loeschen():
     print("\n--- Film löschen ---")
-    titel_zu_loeschen = input("Titel des zu löschenden Films: ")
+    titel_zu_loeschen = input("Titel des zu löschenden Films: ").strip()
     if titel_zu_loeschen in filme:
         del filme[titel_zu_loeschen]
         print(f"Film '{titel_zu_loeschen}' wurde aus dem Katalog entfernt.")
     else:
         print(f"Fehler: Film '{titel_zu_loeschen}' nicht im Katalog gefunden.")
 
-def katalog_speichern():  # NEU
+def katalog_speichern():
     try:
         with open(DATEINAME, 'w', encoding='utf-8') as f:
             json.dump(filme, f, indent=4, ensure_ascii=False)
@@ -70,7 +83,7 @@ def katalog_speichern():  # NEU
     except IOError as e:
         print(f"Fehler beim Speichern des Katalogs: {e}")
 
-def katalog_laden():  # NEU
+def katalog_laden():
     global filme
     try:
         with open(DATEINAME, 'r', encoding='utf-8') as f:
@@ -96,10 +109,10 @@ def zeige_menue():
     print("------------------------")
 
 def main():
-    katalog_laden()  # GEÄNDERT: Laden beim Start
+    katalog_laden()
     while True:
         zeige_menue()
-        wahl = input("Ihre Wahl: ")
+        wahl = input("Ihre Wahl: ").strip()
 
         if wahl == '1':
             film_hinzufuegen()
@@ -110,7 +123,7 @@ def main():
         elif wahl == '4':
             film_loeschen()
         elif wahl == '5':
-            katalog_speichern()  # GEÄNDERT: Speichern vor dem Beenden
+            katalog_speichern()
             print("Programm wird beendet. Auf Wiedersehen!")
             break
         else:
